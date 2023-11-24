@@ -25,8 +25,22 @@ function Note() {
 
   return (
     <form className="Form">
-      <input className="Note-editable Note-title" type="text" value={note.title} />
-      <textarea className="Note-editable Note-content" value={note.content} />
+      <input
+      className="Note-editable Note-title"
+      type="text"
+      value={note.title}
+      onChange={(event) => {
+        setNote({...note, title: event.target.value});
+      }}
+      />
+
+      <textarea
+      className="Note-editable Note-content"
+      value={note.content}
+      onChange={(event) => {
+        setNote({...note, content: event.target.value});
+      }}
+      />
       <div className="Note-actions">
         <button className="Button">Enregistrer</button>
       </div>
