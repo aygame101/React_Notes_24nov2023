@@ -15,6 +15,13 @@ function Note() {
     setNote(data);
     }
 
+  async function saveNote() {
+    const response = await fetch(`/notes/${id}`, {
+      method: "PUT", 
+      headers: {"Content-type": "application/json"}, 
+      body: JSON.stringify(note)});
+  }
+
     useEffect(function () {
     fetchNote();
     }, [id]);
@@ -24,7 +31,7 @@ function Note() {
     }
 
   return (
-    <form className="Form">
+    <form className="Form" onSubmit={(event) => {event.preventDefault(); saveNote();}}>
       <input
       className="Note-editable Note-title"
       type="text"
