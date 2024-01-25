@@ -40,6 +40,17 @@ function App() {
     }
   }
 
+  const deleteNote = async (noteId) => {
+    const response = await fetch(`http://localhost:4000/notes/${noteId}`, {
+      method: 'DELETE',
+    });
+  
+    if (!response.ok) {
+      throw new Error('Erreur lors de la suppression de la note');
+    }
+  };
+  
+
   useEffect(function () {
     fetchNotes();
   }, []);
@@ -58,6 +69,11 @@ function App() {
                   <Link className="Note-link" to={`/notes/${note.id}`}>
                     {note.title}
                   </Link>
+                  <button
+                  className="Button-delete" 
+                  onClick={() => deleteNote(note.id).then(fetchNotes).catch(console.error)}>
+                  Supprimer
+                  </button>
                 </li>
               ))}
             </ol>
