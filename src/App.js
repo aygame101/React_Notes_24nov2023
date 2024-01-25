@@ -13,62 +13,29 @@ import { useNavigate } from "react-router-dom";
 function App() {
   // déclarer l'état pour stocker les notes
   const [notes, setNotes] = useState(null);
-  const [note, setNote] = useState({ispinned: false });
+  const [note, setNote] = useState({ ispinned: false });
   const navigate = useNavigate();
-  
+
 
   async function fetchNotes() {
     try {
       const response = await fetch("http://localhost:4000/notes");
-    const data = await response.json();
-    data.sort((a, b) => new Date(b.lastmodif) - new Date(a.lastmodif));
-    setNotes(data);
+      const data = await response.json();
+      data.sort((a, b) => new Date(b.lastmodif) - new Date(a.lastmodif));
+      setNotes(data);
     } catch (error) {
       console.log(error);
     }
   }
 
 
-  
 
-  const pinNote = async (noteId) => {
-    const noteToPin = notes.find(n => n.id === noteId);
-    if (!noteToPin) {
-      console.error('Note non trouvée');
-      return;
-    }
-    const updatedNote = {
-      ...note,
-      ispinned: !note.ispinned
-    };
-  console.log("ge");
-    setNote(updatedNote);
-  
-    try {
-      const response = await fetch(`http://localhost:4000/notes/${note.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedNote)
-      });
-  
-      if (!response.ok) {
-        throw new Error('Erreur de mise à jour de la note');
-      }
-      // Gérer la réponse ici, si nécessaire
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour de la note :', error);
-      // Ici, vous pourriez revenir en arrière sur le changement d'état en cas d'erreur
-    }
-  };
-  
+  async function createNote() {
 
-
-  async function createNote() { 
-    
     try {
       await fetch("http://localhost:4000/notes", {
         method: "POST",
-        body: JSON.stringify({ id: await findId(), title: "Nouvelle note", content: "", lastmodif: new Date(), ispinned: false}),
+        body: JSON.stringify({ id: await findId(), title: "Nouvelle note", content: "", lastmodif: new Date(), ispinned: 0 }),
         headers: { "Content-type": "application/json" },
       });
       fetchNotes();
@@ -77,17 +44,19 @@ function App() {
     }
   }
 
+
   const deleteNote = async (noteId) => {
     const response = await fetch(`http://localhost:4000/notes/${noteId}`, {
       method: 'DELETE',
     });
     navigate("/");
-  
+
     if (!response.ok) {
       throw new Error('Erreur lors de la suppression de la note');
     }
   };
-  
+
+
   async function findId() {
     try {
       const response = await fetch("http://localhost:4000/notes");
@@ -114,6 +83,39 @@ function App() {
     }
   }
 
+  const pinNote = async (noteId) => {
+    const noteToPin = notes.find((n) => n.id === noteId);
+    console.log(noteId);
+    if (!noteToPin) {
+      console.error('Note non trouvée');
+      return;
+    }
+  
+    const updatedNote = {
+      ...noteToPin,
+      ispinned: noteToPin.ispinned === 0 ? 1 : 0,
+
+    };
+  
+    try {
+      const response = await fetch(`http://localhost:4000/notes/${noteToPin.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedNote),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Erreur de mise à jour de la note');
+      }
+  
+      // Recharge les notes après la mise à jour
+      fetchNotes();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de la note :', error);
+    }
+  };
+  
+
   useEffect(function () {
     fetchNotes();
   }, []);
@@ -133,11 +135,11 @@ function App() {
                     {note.title}
                   </Link>
                   <button
-                  className="Button-delete" 
-                  onClick={() => deleteNote(note.id).then(fetchNotes).catch(console.error)}>
-                  Supprimer
+                    className="Button-delete"
+                    onClick={() => deleteNote(note.id).then(fetchNotes).catch(console.error)}>
+                    Supprimer
                   </button>
-                  <button onClick={pinNote}>{note.ispinned ? "Épinglé !" : "Épingler ?"}</button>
+                  <button onClick={() => pinNote(note.id)}>{note.ispinned ? "Épinglé !" : "Épingler ?"}</button>
                 </li>
               ))}
             </ol>
