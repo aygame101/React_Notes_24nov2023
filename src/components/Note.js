@@ -14,14 +14,23 @@ function Note({onSaveSuccess}) {
     const response = await fetch(`/notes/${id}`);
     const data = await response.json();
 
+    
     setNote(data);
     }
 
+    
   async function saveNote() {
+
+    const updatedNote = {
+      ...note,
+      lastmodif: new Date().toISOString(),
+    };
     const response = await fetch(`/notes/${id}`, {
       method: "PUT", 
       headers: {"Content-type": "application/json"}, 
-      body: JSON.stringify(note)});
+      body: JSON.stringify(updatedNote),
+
+    });
 
       onSaveSuccess();
 

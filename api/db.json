@@ -1,19 +1,11 @@
 {
   "notes": [
     {
-      "id": "5c44",
-      "title": "aaa",
-      "content": ""
-    },
-    {
-      "id": "3fe3",
+      "id": "1",
       "title": "Nouvelle note",
-      "content": ""
-    },
-    {
-      "id": "10b5",
-      "title": "Nouvelle note",
-      "content": ""
+      "content": "",
+      "lastmodif": "2024-01-25T13:30:54.654Z",
+      "ispinned": false
     }
   ],
   "profile": {
