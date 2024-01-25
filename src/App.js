@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 
 import "./App.css";
 import Note from "./components/Note";
+import { useNavigate } from "react-router-dom";
 
 // CYCLE DE VIE du composant App :
 // 1. rendu initial (avec les valeurs d'état initiales)
@@ -13,6 +14,7 @@ function App() {
   // déclarer l'état pour stocker les notes
   const [notes, setNotes] = useState(null);
   const [note, setNote] = useState({ispinned: false });
+  const navigate = useNavigate();
   
 
   async function fetchNotes() {
@@ -79,6 +81,7 @@ function App() {
     const response = await fetch(`http://localhost:4000/notes/${noteId}`, {
       method: 'DELETE',
     });
+    navigate("/");
   
     if (!response.ok) {
       throw new Error('Erreur lors de la suppression de la note');
@@ -116,7 +119,7 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <>
       <aside className="Side">
         <div>
           <button className="Button Button-create-note" onClick={createNote}>
@@ -134,7 +137,7 @@ function App() {
                   onClick={() => deleteNote(note.id).then(fetchNotes).catch(console.error)}>
                   Supprimer
                   </button>
-                  <button onClick={pinNote}>{note.ispinned ? "Épinglé" : "Épingler"}</button>
+                  <button onClick={pinNote}>{note.ispinned ? "Épinglé !" : "Épingler ?"}</button>
                 </li>
               ))}
             </ol>
@@ -149,7 +152,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
-    </BrowserRouter>
+    </>
   );
 }
 
