@@ -19,11 +19,9 @@ function App() {
       const response = await fetch("http://localhost:4000/notes");
     const data = await response.json();
     setNotes(data);
-    console.log("FETCH");
-    console.log(data);
 
     } catch (error) {
-      console.log("zut");
+      console.log(error);
     }
     
   }
@@ -38,7 +36,7 @@ function App() {
       });
       fetchNotes();
     } catch (error) {
-      console.log("zut");
+      console.log(error);
     }
   }
 

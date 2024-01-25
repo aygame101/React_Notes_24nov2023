@@ -2,11 +2,13 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import "./Note.css";
+import Loader from "./Loader.js";
 
 function Note({onSaveSuccess}) {
   const { id } = useParams();
 
   const [note, setNote] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   async function fetchNote() {
     const response = await fetch(`/notes/${id}`);
@@ -20,16 +22,23 @@ function Note({onSaveSuccess}) {
       method: "PUT", 
       headers: {"Content-type": "application/json"}, 
       body: JSON.stringify(note)});
+
       onSaveSuccess();
+
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+      setShowSuccessMessage(false);
+    }, 3000);
   }
 
-    useEffect(function () {
-    fetchNote();
-    }, [id]);
+  useEffect(function () {
+  fetchNote();
+  }, [id]);
 
-    if (!note) {
-      return "Chargement...";
-    }
+  if (!note) {
+    return <Loader />;
+  }
+
 
   return (
     <form className="Form" onSubmit={(event) => {event.preventDefault(); saveNote();}}>
@@ -51,6 +60,7 @@ function Note({onSaveSuccess}) {
       />
       <div className="Note-actions">
         <button className="Button">Enregistrer</button>
+        {showSuccessMessage && <div>Enregistré avec succès.</div>}
       </div>
     </form>
   );
