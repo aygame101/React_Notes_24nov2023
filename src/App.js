@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 function App() {
   // déclarer l'état pour stocker les notes
   const [notes, setNotes] = useState(null);
-  const [note, setNote] = useState({ ispinned: false });
   const navigate = useNavigate();
 
 
@@ -82,7 +81,7 @@ function App() {
       return null;
     }
   }
-
+  
   const pinNote = async (noteId) => {
     const noteToPin = notes.find((n) => n.id === noteId);
     console.log(noteId);
@@ -90,31 +89,30 @@ function App() {
       console.error('Note non trouvée');
       return;
     }
-  
+
     const updatedNote = {
       ...noteToPin,
-      ispinned: noteToPin.ispinned === 0 ? 1 : 0,
-
+      ispinned: !noteToPin.ispinned,
     };
-  
+
     try {
       const response = await fetch(`http://localhost:4000/notes/${noteToPin.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedNote),
       });
-  
+
       if (!response.ok) {
         throw new Error('Erreur de mise à jour de la note');
       }
-  
+
       // Recharge les notes après la mise à jour
       fetchNotes();
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la note :', error);
     }
   };
-  
+
 
   useEffect(function () {
     fetchNotes();
@@ -134,12 +132,14 @@ function App() {
                   <Link className="Note-link" to={`/notes/${note.id}`}>
                     {note.title}
                   </Link>
-                  <button
-                    className="Button-delete"
-                    onClick={() => deleteNote(note.id).then(fetchNotes).catch(console.error)}>
-                    Supprimer
-                  </button>
-                  <button onClick={() => pinNote(note.id)}>{note.ispinned ? "Épinglé !" : "Épingler ?"}</button>
+                  <div className="dpinGrid">
+                    <button
+                      className="Button-delete"
+                      onClick={() => deleteNote(note.id).then(fetchNotes).catch(console.error)}>
+                      Supprimer
+                    </button>
+                    <button className={`Button ${note.ispinned ? "pinned_yes" : ""}`} onClick={() => pinNote(note.id)}>{note.ispinned ? "Épinglé !" : "Épingler ?"}</button>
+                  </div>
                 </li>
               ))}
             </ol>
