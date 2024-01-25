@@ -13,19 +13,33 @@ function App() {
   // déclarer l'état pour stocker les notes
   const [notes, setNotes] = useState(null);
 
+
   async function fetchNotes() {
-    const response = await fetch("/notes?_sort=id&_order=desc");
+    try {
+      const response = await fetch("http://localhost:4000/notes");
     const data = await response.json();
     setNotes(data);
+    console.log("FETCH");
+    console.log(data);
+
+    } catch (error) {
+      console.log("zut");
+    }
+    
   }
 
-  async function createNote() {
-    await fetch("/notes", {
-      method: "POST",
-      body: JSON.stringify({ title: "Nouvelle note", content: "" }),
-      headers: { "Content-type": "application/json" },
-    });
-    fetchNotes();
+  async function createNote() { 
+    
+    try {
+      await fetch("http://localhost:4000/notes", {
+        method: "POST",
+        body: JSON.stringify({ title: "Nouvelle note", content: "" }),
+        headers: { "Content-type": "application/json" },
+      });
+      fetchNotes();
+    } catch (error) {
+      console.log("zut");
+    }
   }
 
   useEffect(function () {
