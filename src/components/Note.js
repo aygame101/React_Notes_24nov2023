@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import "./Note.css";
 
-function Note() {
+function Note({onSaveSuccess}) {
   const { id } = useParams();
 
   const [note, setNote] = useState(null);
@@ -20,6 +20,7 @@ function Note() {
       method: "PUT", 
       headers: {"Content-type": "application/json"}, 
       body: JSON.stringify(note)});
+      onSaveSuccess();
   }
 
     useEffect(function () {

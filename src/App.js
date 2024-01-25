@@ -55,7 +55,7 @@ function App() {
       <main className="Main">
         <Routes>
           <Route path="/" element="Sélectionner une note" />
-          <Route path="/notes/:id" element={<Note />} />
+          <Route path="/notes/:id" element={<Note onSaveSuccess={fetchNotes} />} />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
