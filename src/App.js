@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 
 import "./App.css";
@@ -13,13 +13,20 @@ import { useNavigate } from "react-router-dom";
 function App() {
   // déclarer l'état pour stocker les notes
   const [notes, setNotes] = useState(null);
+  const [allNotes, setAllNotes] = useState(null);
   const navigate = useNavigate();
 
-  async function fetchNotes() {
+  const notesPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(1); 
+
+  const fetchNotes = useCallback(async () => {
     try {
+      
       const response = await fetch("http://localhost:4000/notes");
       const data = await response.json();
       data.sort((a, b) => new Date(b.lastmodif) - new Date(a.lastmodif));
+      setAllNotes(data);
 
       const filteredNotes = data.filter((note) => note);
       const pinnedNotes = filteredNotes.filter((note) => note?.ispinned);
@@ -33,21 +40,38 @@ function App() {
       });
 
       const sortedNotes = [...sortedPinnedNotes, ...sortedUnpinnedNotes];
-      setNotes(sortedNotes);
+
+      setMaxPage(Math.ceil(sortedNotes.length / notesPerPage));
+      const startIndex = (currentPage - 1) * notesPerPage;
+      const endIndex = startIndex + notesPerPage;
+      const notesForCurrentPage = sortedNotes.slice(startIndex, endIndex);
+      setNotes(notesForCurrentPage);
+
+
+      // setNotes(sortedNotes);
 
     } catch (error) {
       console.log(error);
     }
-  }
+  }, [currentPage, notesPerPage]);
+
+
+  useEffect(function () {
+    fetchNotes();
+  }, [fetchNotes]);
+  useEffect(() => {
+    fetchNotes();
+  }, [currentPage, fetchNotes]);
 
 
   function nbNotes() {
-    if (notes && Array.isArray(notes)) {
-      return notes.length;
+    if (allNotes && Array.isArray(allNotes)) {
+      return allNotes.length;
     } else {
       return 0;
     }
   }
+
 
 
 
@@ -139,11 +163,6 @@ function App() {
     }
   };
 
-
-  useEffect(function () {
-    fetchNotes();
-  }, []);
-
   return (
     <>
       <aside className="Side">
@@ -151,6 +170,12 @@ function App() {
           <button className="Button Button-create-note" onClick={createNote}>
             +
           </button>
+          <button onClick={() => setCurrentPage(currentPage-1)} disabled={currentPage === 1} className="pageButtons">
+              Page précedente
+            </button>
+            <button onClick={() => setCurrentPage(currentPage+1)} disabled={currentPage === maxPage} className="pageButtons">
+              Page suivante
+            </button>
           {notes !== null ? (
             <ol className="Notes-list">
               {notes.map((note) => (
