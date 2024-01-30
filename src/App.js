@@ -129,7 +129,6 @@ function App() {
 
   const pinNote = async (noteId) => {
     const noteToPin = notes.find((n) => n.id === noteId);
-    console.log(noteId);
     if (!noteToPin) {
       console.error('Note non trouvée');
       return;
