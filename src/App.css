@@ -106,3 +106,17 @@
   padding: 3px;
   border: solid 2px;
 }
+
+.Notes-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  width: 100%;
+}
+
+.pageButtons {
+  font-size: 20px;
+}
+
+.currentPage {
+  font-size: 20px;
+}

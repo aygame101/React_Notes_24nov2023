@@ -18,11 +18,11 @@ function App() {
 
   const notesPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(1); 
+  const [maxPage, setMaxPage] = useState(1);
 
   const fetchNotes = useCallback(async () => {
     try {
-      
+
       const response = await fetch("http://localhost:4000/notes");
       const data = await response.json();
       data.sort((a, b) => new Date(b.lastmodif) - new Date(a.lastmodif));
@@ -167,15 +167,18 @@ function App() {
     <>
       <aside className="Side">
         <div>
-          <button className="Button Button-create-note" onClick={createNote}>
-            +
-          </button>
-          <button onClick={() => setCurrentPage(currentPage-1)} disabled={currentPage === 1} className="pageButtons">
-              Page précedente
+          <div className="Notes-header">
+            <button className="Button Button-create-note" onClick={createNote}>
+              +
             </button>
-            <button onClick={() => setCurrentPage(currentPage+1)} disabled={currentPage === maxPage} className="pageButtons">
-              Page suivante
+            <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="pageButtons">
+              -
             </button>
+            <span className="currentPage">{currentPage}</span>
+            <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === maxPage} className="pageButtons">
+              +
+            </button>
+          </div>
           {notes !== null ? (
             <ol className="Notes-list">
               {notes.map((note) => (
