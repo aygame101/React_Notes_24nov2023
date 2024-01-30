@@ -50,14 +50,14 @@ function App() {
   }
 
 
+
   async function createNote() {
     const numberOfNotes = nbNotes();
-    console.log(numberOfNotes);
 
     try {
       await fetch("http://localhost:4000/notes", {
         method: "POST",
-        body: JSON.stringify({ id: await findId(), title: `Note ${numberOfNotes + 1}`, content: "", lastmodif: new Date(), ispinned: 0 }),
+        body: JSON.stringify({ id: await findId(), title: `Note ${numberOfNotes + 1}`, content: "Nouvelle note", lastmodif: new Date(), ispinned: 0 }),
         headers: { "Content-type": "application/json" },
       });
 
@@ -106,6 +106,7 @@ function App() {
       return null;
     }
   }
+
 
   const pinNote = async (noteId) => {
     const noteToPin = notes.find((n) => n.id === noteId);
@@ -163,7 +164,7 @@ function App() {
                       onClick={() => deleteNote(note.id).then(fetchNotes).catch(console.error)}>
                       Supprimer
                     </button>
-                    <button className={`Button ${note.ispinned ? "pinned_yes" : ""}`} onClick={() => pinNote(note.id)}>{note.ispinned ? "Épinglé !" : "Épingler ?"}</button>
+                    <button className={`Button ${note.ispinned ? "pinned" : "not_pin"}`} onClick={() => pinNote(note.id)}>{note.ispinned ? "Épinglé !" : "Épingler ?"}</button>
                   </div>
                 </li>
               ))}
