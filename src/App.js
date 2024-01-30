@@ -15,29 +15,54 @@ function App() {
   const [notes, setNotes] = useState(null);
   const navigate = useNavigate();
 
-
   async function fetchNotes() {
     try {
       const response = await fetch("http://localhost:4000/notes");
       const data = await response.json();
       data.sort((a, b) => new Date(b.lastmodif) - new Date(a.lastmodif));
-      setNotes(data);
+
+      const filteredNotes = data.filter((note) => note);
+      const pinnedNotes = filteredNotes.filter((note) => note?.ispinned);
+      const unpinnedNotes = filteredNotes.filter((note) => !note?.ispinned);
+
+      const sortedPinnedNotes = pinnedNotes.sort((a, b) => {
+        return new Date(b.dateModified) - new Date(a.dateModified);
+      });
+      const sortedUnpinnedNotes = unpinnedNotes.sort((a, b) => {
+        return new Date(b.dateModified) - new Date(a.dateModified);
+      });
+
+      const sortedNotes = [...sortedPinnedNotes, ...sortedUnpinnedNotes];
+      setNotes(sortedNotes);
+
     } catch (error) {
       console.log(error);
     }
   }
 
 
+  function nbNotes() {
+    if (notes && Array.isArray(notes)) {
+      return notes.length;
+    } else {
+      return 0;
+    }
+  }
+
 
   async function createNote() {
+    const numberOfNotes = nbNotes();
+    console.log(numberOfNotes);
 
     try {
       await fetch("http://localhost:4000/notes", {
         method: "POST",
-        body: JSON.stringify({ id: await findId(), title: "Nouvelle note", content: "", lastmodif: new Date(), ispinned: 0 }),
+        body: JSON.stringify({ id: await findId(), title: `Note ${numberOfNotes + 1}`, content: "", lastmodif: new Date(), ispinned: 0 }),
         headers: { "Content-type": "application/json" },
       });
+
       fetchNotes();
+
     } catch (error) {
       console.log(error);
     }
@@ -81,7 +106,7 @@ function App() {
       return null;
     }
   }
-  
+
   const pinNote = async (noteId) => {
     const noteToPin = notes.find((n) => n.id === noteId);
     console.log(noteId);
