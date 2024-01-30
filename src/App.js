@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 // 4. ce qui fait automatiquement un nouveau rendu
 
 function App() {
-  // déclarer l'état pour stocker les notes
+
   const [notes, setNotes] = useState(null);
   const [allNotes, setAllNotes] = useState(null);
   const navigate = useNavigate();
@@ -47,9 +47,6 @@ function App() {
       const notesForCurrentPage = sortedNotes.slice(startIndex, endIndex);
       setNotes(notesForCurrentPage);
 
-
-      // setNotes(sortedNotes);
-
     } catch (error) {
       console.log(error);
     }
@@ -71,8 +68,6 @@ function App() {
       return 0;
     }
   }
-
-
 
 
   async function createNote() {
@@ -140,10 +135,12 @@ function App() {
       return;
     }
 
+
     const updatedNote = {
       ...noteToPin,
       ispinned: !noteToPin.ispinned,
     };
+
 
     try {
       const response = await fetch(`http://localhost:4000/notes/${noteToPin.id}`, {
@@ -162,6 +159,7 @@ function App() {
       console.error('Erreur lors de la mise à jour de la note :', error);
     }
   };
+
 
   return (
     <>
