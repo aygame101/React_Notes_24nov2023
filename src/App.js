@@ -171,11 +171,11 @@ function App() {
             <button className="Button Button-create-note" onClick={createNote}>
               +
             </button>
-            <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="pageButtons">
+            <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="pageButtonsLeft">
               -
             </button>
             <span className="currentPage">{currentPage}</span>
-            <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === maxPage} className="pageButtons">
+            <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === maxPage} className="pageButtonsRight">
               +
             </button>
           </div>
