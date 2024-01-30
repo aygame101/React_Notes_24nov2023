@@ -1,3 +1,6 @@
+# React App Note
+Création d'un site internet en react pour prendre des notes (comme un google keep, app Notes d'IOS, ect.) pour les cours.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
