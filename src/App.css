@@ -90,5 +90,6 @@
 }
 
 .pinned_yes {
-  background-color: red;
+  background-color: white;
+  color: black;
 }
